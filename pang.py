@@ -20,7 +20,7 @@ class Player():
             self.shoot()
         if is_key_down(KeyboardKey.KEY_RIGHT):
             motion.x += 1
-        elif is_key_down(KeyboardKey.KEY_LEFT):
+        if is_key_down(KeyboardKey.KEY_LEFT):
             motion.x -= 1
 
         delta_x = self.position.x
@@ -133,6 +133,7 @@ class Ball():
             pts = SMALL_BALL_PTS
         
         self.parent.player.points += pts
+        self.parent.pointIDS.append([self.position.x , self.position.y , POINTS_FRAMES , pts])
 
 
     
@@ -155,6 +156,7 @@ class Score():
 class Game():
 
     def __init__(self):
+        self.pointIDS = []
         self.paused = False
         self.gameover = False
         self.victory = False
@@ -204,15 +206,20 @@ class Game():
             if shot.active: shot.draw()
         for ball in self.balls:
             if ball.active: ball.draw()
-        draw_text(f"{self.player.points} POINTS" , 10, 10, 20 , PURPLE)
+        for ID in self.pointIDS:
+            if ID[2] > 0:
+                draw_text(f"+{str(ID[3])}" , int(ID[0]) , int(ID[1]) , 20, Color(200, 122, 255, int(2.55 * ID[2])) )
+                ID[2] -= 1
+
+        draw_text(f"{self.player.points} POINTS" , 10, 10, 30 , PURPLE)
 
         if self.paused:
-            draw_rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,TRANSPARENT_GRAY)
+            draw_rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, TRANSPARENT_GRAY)
             draw_text("Press [P] to unpause" , WINDOW_WIDTH//3 , WINDOW_HEIGHT//2, 30, BLACK)
 
         if self.gameover:
-            draw_rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,TRANSPARENT_GRAY)
-            draw_text("GAME OVER, PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
+            draw_rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, TRANSPARENT_GRAY)
+            draw_text("GAME OVER PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
 
         if self.victory:
             draw_text("GAME WIN! PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
