@@ -110,6 +110,13 @@ class Ball():
                     self.split()
                 self.active = False
 
+        top = self.parent.player.top
+        pos = self.parent.player.position
+        right = self.parent.player.right
+        
+        if check_collision_circle_line(self.position,self.radius,top,pos) or check_collision_circle_line(self.position,self.radius,top,right):
+            self.parent.gameover = True
+
     
     def split(self):
         self.parent.balls.append(Ball(self.parent,self.position, True, self.radius-19, Vector2(300,-500)))
@@ -130,21 +137,57 @@ class Score():
 class Game():
 
     def __init__(self):
+        self.paused = False
+        self.gameover = False
+        self.victory = False
         self.player = Player(Vector2(WINDOW_WIDTH//2,WINDOW_HEIGHT))
         self.balls = [Ball(self, Vector2(random.randint(0,WINDOW_WIDTH),random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(300,-100))  , 
                       Ball(self, Vector2(random.randint(0,WINDOW_WIDTH) , random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(-300,-100)) ]
+        
 
     def startup(self):
         pass
 
 
     def update(self):
-        self.player.update()
 
-        for shot in self.player.shots: 
-            if shot.active: shot.update()
-        for ball in self.balls:
-            if ball.active: ball.update()
+        if (not self.gameover and not self.victory):
+            if IsKeyPressed(KEY_P):
+                self.paused = not self.paused
+
+            if not self.paused:
+
+                self.player.update()
+
+                for shot in self.player.shots: 
+                    if shot.active: shot.update()
+
+
+                actives = False
+                for ball in self.balls:
+                    if ball.active: 
+                        ball.update()
+                        actives = True
+                if not actives:
+                    self.gamewin()
+
+            else:
+                pass
+
+                #paused
+        
+        if self.gameover:
+            pass
+            #lose
+
+        if self.victory:
+            pass
+            #win
+
+
+    def gamewin(self):
+        self.victory = True
+
         
         
     def draw(self):
@@ -153,4 +196,9 @@ class Game():
             if shot.active: shot.draw()
         for ball in self.balls:
             if ball.active: ball.draw()
+
+        if self.paused:
+            draw_rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,TRANSPARENT_GRAY)
+            draw_text("Press [P] to unpause" , WINDOW_WIDTH//5 * 2, WINDOW_HEIGHT//2, 20, BLACK)
+        
 
