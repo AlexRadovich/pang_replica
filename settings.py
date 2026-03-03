@@ -2,7 +2,7 @@ from raylib import *
 from pyray import *
 
 
-WINDOW_WIDTH, WINDOW_HEIGHT = 900,700
+WINDOW_WIDTH, WINDOW_HEIGHT = 1100,700
 
 GRAVITY           = 2000
 
@@ -17,6 +17,9 @@ BALL_COLOR        =  RED
 BIG_BALL_SIZE     =  50
 MED_BALL_SIZE     =  35
 SMALL_BALL_SIZE   =  20
+BIG_BALL_PTS      =  200
+MED_BALL_PTS      =  100
+SMALL_BALL_PTS    =  50
 
 SHOOT_SPEED       =  700
 SHOOT_THICKNESS   =  3

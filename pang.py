@@ -5,6 +5,7 @@ import random
 
 class Player():
     def __init__(self, position, speed = PLAYER_SPEED):
+        self.points = 0
         self.position = position
         self.top = Vector2(position.x + 25, position.y- 50)
         self.right = Vector2(position.x + 50, position.y)
@@ -110,12 +111,29 @@ class Ball():
                     self.split()
                 self.active = False
 
+                self.add_points(self.radius)
+
         top = self.parent.player.top
         pos = self.parent.player.position
         right = self.parent.player.right
         
         if check_collision_circle_line(self.position,self.radius,top,pos) or check_collision_circle_line(self.position,self.radius,top,right):
             self.parent.gameover = True
+
+    def add_points(self,size):
+
+        pts = 0
+        if size == 50:
+            pts = BIG_BALL_PTS
+
+        elif size == 31:
+            pts = MED_BALL_PTS
+
+        elif size == 12:
+            pts = SMALL_BALL_PTS
+        
+        self.parent.player.points += pts
+
 
     
     def split(self):
@@ -168,21 +186,11 @@ class Game():
                     if ball.active: 
                         ball.update()
                         actives = True
-                if not actives:
-                    self.gamewin()
+                if not actives and not self.gameover:
+                    self.victory = True
 
-            else:
-                pass
-
-                #paused
-        
-        if self.gameover:
-            pass
-            #lose
-
-        if self.victory:
-            pass
-            #win
+        if is_key_pressed(KEY_ENTER) and (self.gameover or self.victory):
+            self.__init__()
 
 
     def gamewin(self):
@@ -196,9 +204,15 @@ class Game():
             if shot.active: shot.draw()
         for ball in self.balls:
             if ball.active: ball.draw()
+        draw_text(f"{self.player.points} POINTS" , 10, 10, 20 , PURPLE)
 
         if self.paused:
             draw_rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,TRANSPARENT_GRAY)
-            draw_text("Press [P] to unpause" , WINDOW_WIDTH//5 * 2, WINDOW_HEIGHT//2, 20, BLACK)
-        
+            draw_text("Press [P] to unpause" , WINDOW_WIDTH//3 , WINDOW_HEIGHT//2, 30, BLACK)
 
+        if self.gameover:
+            draw_rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,TRANSPARENT_GRAY)
+            draw_text("GAME OVER, PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
+
+        if self.victory:
+            draw_text("GAME WIN! PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
