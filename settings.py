@@ -1,0 +1,26 @@
+from raylib import *
+from pyray import *
+
+
+WINDOW_WIDTH, WINDOW_HEIGHT = 900,700
+
+GRAVITY           = 2000
+
+PLAYER_BASE_SIZE  =  20.0
+PLAYER_SPEED      =  500
+PLAYER_MAX_SHOOTS =  1
+PLAYER_COLOR      =  RED
+
+MAX_BIG_BALLS     =  2
+BALLS_SPEED       =  .80
+BALL_COLOR        =  RED
+BIG_BALL_SIZE     =  50
+MED_BALL_SIZE     =  35
+SMALL_BALL_SIZE   =  20
+BASE_MOTION_VEC   =  Vector2(300,-500)
+REV_MOTION_VEC    =  Vector2(-300,-500)
+
+SHOOT_SPEED       =  700
+SHOOT_THICKNESS   =  3
+SHOOT_COLOR       =  DARKGRAY
+
