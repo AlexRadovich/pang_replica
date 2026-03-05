@@ -3,7 +3,9 @@ from pyray import *
 
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 1100,700
-
+# WINDOW_WIDTH = get_monitor_width(0)
+# WINDOW_HEIGHT = get_monitor_height(0)
+#print("HERE",WINDOW_HEIGHT,WINDOW_WIDTH)
 GRAVITY           = 2000
 
 PLAYER_BASE_SIZE  =  20.0
@@ -28,3 +30,8 @@ SHOOT_COLOR       =  DARKGRAY
 POINTS_FRAMES     =  100
 
 TRANSPARENT_GRAY  = Color(50,50,50,50)
+
+# class Settings():
+#     def __init__(self):
+#         WINDOW_WIDTH = get_screen_width()
+#         WINDOW_HEIGHT = get_screen_height()

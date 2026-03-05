@@ -1,6 +1,7 @@
 from raylib import *
 from settings import *
 from pyray import *
+from collections import deque
 import random
 
 class Player():
@@ -12,6 +13,9 @@ class Player():
         self.speed = speed
         self.shots = []
         self.active_shots = 0
+
+        self.gun = Gun(self.top)
+
 
     def update(self):
         motion = Vector2(0, 0)
@@ -33,6 +37,7 @@ class Player():
         delta_x = self.position.x - delta_x
         self.top.x += delta_x
         self.right.x += delta_x
+        self.gun.update()
         
 
     def draw(self):
@@ -47,6 +52,21 @@ class Player():
         return self.position
 
 
+class Gun():
+
+    def __init__(self,position):
+        self.dt = get_frame_time()
+        self.bullets = deque()
+        self.position = position
+        self.time_held = 0
+        #bullet_texture = load_texture()
+        #muzzle_flash_texture = load_texture()
+        pass
+    def update(self):
+        if is_key_down(KEY_TWO):
+            self.time_held += 1
+            #replace with muzzle flash sprite
+            draw_circle(int(self.position.x), int(self.position.y), 20, BLACK)
 
 
 class Shoot():
@@ -156,6 +176,7 @@ class Score():
 class Game():
 
     def __init__(self):
+        self.get_screen_dimens()
         self.pointIDS = []
         self.paused = False
         self.gameover = False
@@ -165,6 +186,11 @@ class Game():
                       Ball(self, Vector2(random.randint(0,WINDOW_WIDTH) , random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(-300,-100)) ]
         
 
+    def get_screen_dimens(self):
+        self.WW = get_screen_width()
+        self.WH = get_screen_height()
+        return[WINDOW_WIDTH,WINDOW_HEIGHT]
+    
     def startup(self):
         pass
 
@@ -201,6 +227,7 @@ class Game():
         
         
     def draw(self):
+        draw_text(f"{WINDOW_WIDTH}, {WINDOW_HEIGHT}" , 100, 200, 30, BLACK)
         self.player.draw()
         for shot in self.player.shots: 
             if shot.active: shot.draw()
@@ -223,3 +250,6 @@ class Game():
 
         if self.victory:
             draw_text("GAME WIN! PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
+
+    def shutdown(self):
+        pass
