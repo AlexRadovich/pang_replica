@@ -8,6 +8,7 @@ current_game = Game()
 if __name__ == '__main__':  
 
   init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Pang")
+  #toggle_fullscreen()
   set_target_fps(120)
 
   current_game.startup()
