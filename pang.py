@@ -37,7 +37,6 @@ class Player():
         delta_x = self.position.x - delta_x
         self.top.x += delta_x
         self.right.x += delta_x
-        self.gun.update()
         
 
     def draw(self):
@@ -52,6 +51,20 @@ class Player():
         return self.position
 
 
+class Bullet():
+
+    def __init__(self,position):
+        self.position = position
+
+        #bullet_texture = load_texture()
+        pass
+
+    def update(self):
+        self.position.y -= BULLET_SPEED * get_frame_time()
+
+    def draw(self):
+        draw_circle(int(self.position.x), int(self.position.y), 10, RED)
+
 class Gun():
 
     def __init__(self,position):
@@ -59,14 +72,20 @@ class Gun():
         self.bullets = deque()
         self.position = position
         self.time_held = 0
-        #bullet_texture = load_texture()
+        
         #muzzle_flash_texture = load_texture()
         pass
     def update(self):
         if is_key_down(KEY_TWO):
             self.time_held += 1
+            if self.time_held % 5 == 0:
+                self.bullets.append(Bullet(Vector2(self.position.x,self.position.y)))
             #replace with muzzle flash sprite
+
+    def draw(self):
+        if is_key_down(KEY_TWO):
             draw_circle(int(self.position.x), int(self.position.y), 20, BLACK)
+        
 
 
 class Shoot():
@@ -204,6 +223,10 @@ class Game():
             if not self.paused:
 
                 self.player.update()
+                self.player.gun.update()
+                for bullet in self.player.gun.bullets:
+                    bullet.update()
+            
 
                 for shot in self.player.shots: 
                     if shot.active: shot.update()
@@ -229,6 +252,9 @@ class Game():
     def draw(self):
         draw_text(f"{WINDOW_WIDTH}, {WINDOW_HEIGHT}" , 100, 200, 30, BLACK)
         self.player.draw()
+        self.player.gun.draw()
+        for bullet in self.player.gun.bullets:
+            bullet.draw()
         for shot in self.player.shots: 
             if shot.active: shot.draw()
         for ball in self.balls:

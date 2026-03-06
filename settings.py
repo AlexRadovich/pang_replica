@@ -31,6 +31,8 @@ POINTS_FRAMES     =  100
 
 TRANSPARENT_GRAY  = Color(50,50,50,50)
 
+BULLET_SPEED      =  1000
+
 # class Settings():
 #     def __init__(self):
 #         WINDOW_WIDTH = get_screen_width()
