@@ -53,14 +53,17 @@ class Player():
 
 class Bullet():
 
-    def __init__(self,position):
+    def __init__(self,position, horizontal_offset=0):
         self.position = position
+        self.hoff = horizontal_offset
 
         #bullet_texture = load_texture()
         pass
 
     def update(self):
-        self.position.y -= BULLET_SPEED * get_frame_time()
+        dt = get_frame_time()
+        self.position.y -= BULLET_SPEED * dt
+        self.position.x +=  self.hoff * dt
 
     def draw(self):
         draw_circle(int(self.position.x), int(self.position.y), 10, RED)
