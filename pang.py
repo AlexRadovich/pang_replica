@@ -2,34 +2,41 @@ from raylib import *
 from settings import *
 from pyray import *
 from collections import deque
+from pathlib import Path
 import random
 
 class Player():
     def __init__(self, position, speed = PLAYER_SPEED):
+        #self.sprite = load_texture("assets/ship.png")
         self.points = 0
         self.position = position
         self.top = Vector2(position.x + 25, position.y- 50)
         self.right = Vector2(position.x + 50, position.y)
         self.speed = speed
         self.shots = []
+        self.movement = Vector2(0,0)
         self.active_shots = 0
 
         self.gun = Gun(self.top)
 
 
     def update(self):
-        motion = Vector2(0, 0)
+        move = self.movement.x
 
         if is_key_pressed(KEY_SPACE):
             self.shoot()
-        if is_key_down(KeyboardKey.KEY_RIGHT):
-            motion.x += 1
-        if is_key_down(KeyboardKey.KEY_LEFT):
-            motion.x -= 1
+        if is_key_down(KeyboardKey.KEY_RIGHT) and move < PLAYER_SPEED_MAX:
+            self.movement.x += .5
+        elif is_key_down(KeyboardKey.KEY_LEFT) and move > -PLAYER_SPEED_MAX:
+            self.movement.x -= .5
+        elif move != 0:
+            self.movement.x -= (move / abs(move))/3
+
+
 
         delta_x = self.position.x
 
-        motion_this_frame = vector2_scale(motion, get_frame_time() * self.speed)
+        motion_this_frame = vector2_scale(self.movement, get_frame_time() * self.speed)
         self.position = vector2_add(self.position, motion_this_frame)
         self.position.x = max(0, self.position.x)
         self.position.x = min(self.position.x, WINDOW_WIDTH - 50)

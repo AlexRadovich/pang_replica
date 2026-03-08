@@ -2,16 +2,17 @@ from raylib import *
 from pyray import *
 
 
-WINDOW_WIDTH, WINDOW_HEIGHT = 1100,700
+WINDOW_WIDTH, WINDOW_HEIGHT = 1000,800
 # WINDOW_WIDTH = get_monitor_width(0)
 # WINDOW_HEIGHT = get_monitor_height(0)
 #print("HERE",WINDOW_HEIGHT,WINDOW_WIDTH)
 GRAVITY           = 2000
 
 PLAYER_BASE_SIZE  =  20.0
-PLAYER_SPEED      =  500
+PLAYER_SPEED      =  50
 PLAYER_MAX_SHOOTS =  1
 PLAYER_COLOR      =  RED
+PLAYER_SPEED_MAX  =  20
 
 MAX_BIG_BALLS     =  2
 BALLS_SPEED       =  .80
