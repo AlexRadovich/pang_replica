@@ -7,10 +7,11 @@ import random
 
 class Player():
     def __init__(self, position, speed = PLAYER_SPEED):
-        #self.sprite = load_texture("assets/ship.png")
+        
         self.points = 0
         self.position = position
-        self.top = Vector2(position.x + 25, position.y- 50)
+        #self.top = Vector2(position.x + 25, position.y- 50)
+        self.top = Vector2(position.x - 25, position.y- 80)
         self.right = Vector2(position.x + 50, position.y)
         self.speed = speed
         self.shots = []
@@ -18,6 +19,9 @@ class Player():
         self.active_shots = 0
 
         self.gun = Gun(self.top)
+
+    def startup(self):
+        self.sprite = load_texture("assets/ship.png")
 
 
     def update(self):
@@ -47,6 +51,7 @@ class Player():
         
 
     def draw(self):
+        draw_texture_ex(self.sprite,self.top,0,2,RED)
         draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
@@ -205,6 +210,7 @@ class Score():
 class Game():
 
     def __init__(self):
+
         self.get_screen_dimens()
         self.pointIDS = []
         self.paused = False
@@ -221,7 +227,8 @@ class Game():
         return[WINDOW_WIDTH,WINDOW_HEIGHT]
     
     def startup(self):
-        pass
+        self.bg = load_texture("assets/bg.png")
+        self.player.startup()
 
 
     def update(self):
@@ -260,7 +267,8 @@ class Game():
         
         
     def draw(self):
-        draw_text(f"{WINDOW_WIDTH}, {WINDOW_HEIGHT}" , 100, 200, 30, BLACK)
+        draw_texture(self.bg,0,0, PURPLE)
+        draw_text(f"{WINDOW_WIDTH}, {WINDOW_HEIGHT}" , 100, 200, 30, WHITE)
         self.player.draw()
         self.player.gun.draw()
         for bullet in self.player.gun.bullets:
