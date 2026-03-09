@@ -11,17 +11,18 @@ class Player():
         self.points = 0
         self.position = position
         #self.top = Vector2(position.x + 25, position.y- 50)
-        self.top = Vector2(position.x - 25, position.y- 80)
-        self.right = Vector2(position.x + 50, position.y)
+        self.top = Vector2(position.x - 25, position.y - 80)
+        self.right = Vector2(position.x + 25, position.y - 65)
         self.speed = speed
         self.shots = []
         self.movement = Vector2(0,0)
         self.active_shots = 0
 
-        self.gun = Gun(self.top)
+        self.gun = Gun(self.right)
 
     def startup(self):
         self.sprite = load_texture("assets/ship.png")
+        self.gun.startup()
 
 
     def update(self):
@@ -52,7 +53,7 @@ class Player():
 
     def draw(self):
         draw_texture_ex(self.sprite,self.top,0,2,RED)
-        draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
+        #draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
         if self.active_shots < PLAYER_MAX_SHOOTS:
@@ -61,6 +62,9 @@ class Player():
 
     def getpos(self):
         return self.position
+    
+    def shutdown(self):
+        unload_texture(self.sprite)
 
 
 class Bullet():
@@ -88,18 +92,39 @@ class Gun():
         self.position = position
         self.time_held = 0
         
-        #muzzle_flash_texture = load_texture()
         pass
     def update(self):
         if is_key_down(KEY_TWO):
+            self.firing = True
             self.time_held += 1
             if self.time_held % 5 == 0:
                 self.bullets.append(Bullet(Vector2(self.position.x,self.position.y)))
+            
             #replace with muzzle flash sprite
+        if not is_key_down(KEY_TWO):
+            self.firing = False
 
     def draw(self):
-        if is_key_down(KEY_TWO):
-            draw_circle(int(self.position.x), int(self.position.y), 20, BLACK)
+        if is_key_down(KEY_TWO) and self.firing:
+            if self.time_held % 30 < 10:
+                draw_texture_ex(self.flash1,self.position,0,.2,RED)
+            elif self.time_held % 30 < 20:
+                draw_texture_ex(self.flash2,self.position,0,.2,RED)
+            else:
+                draw_texture_ex(self.flash3,self.position,0,.2,RED)
+
+            #draw_circle(int(self.position.x), int(self.position.y), 20, BLACK)
+
+    def startup(self):
+        self.flash1 = load_texture("assets/F1.png")
+        self.flash2 = load_texture("assets/F2.png")
+        self.flash3 = load_texture("assets/F3.png")
+
+    def shutdown(self):
+        unload_texture(self.flash1)
+        unload_texture(self.flash2)
+        unload_texture(self.flash3)
+        
         
 
 
@@ -259,6 +284,7 @@ class Game():
 
         if is_key_pressed(KEY_ENTER) and (self.gameover or self.victory):
             self.__init__()
+            self.startup()
 
 
     def gamewin(self):
@@ -296,4 +322,6 @@ class Game():
             draw_text("GAME WIN! PRESS [ENTER] TO PLAY AGAIN" , WINDOW_WIDTH//5, WINDOW_HEIGHT//2, 30, BLACK)
 
     def shutdown(self):
-        pass
+        unload_texture(self.bg)
+        self.player.shutdown()
+        self.player.gun.shutdown()
