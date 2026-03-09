@@ -12,13 +12,14 @@ class Player():
         self.position = position
         #self.top = Vector2(position.x + 25, position.y- 50)
         self.top = Vector2(position.x - 25, position.y - 80)
-        self.right = Vector2(position.x + 25, position.y - 65)
+        self.right = Vector2(position.x - 0, position.y - 95)
+        self.gun_nozzle = Vector2(position.x + 24, position.y - 65)
         self.speed = speed
         self.shots = []
         self.movement = Vector2(0,0)
         self.active_shots = 0
 
-        self.gun = Gun(self.right)
+        self.gun = Gun(self.gun_nozzle, self.right)
 
     def startup(self):
         self.sprite = load_texture("assets/ship.png")
@@ -49,10 +50,11 @@ class Player():
         delta_x = self.position.x - delta_x
         self.top.x += delta_x
         self.right.x += delta_x
+        self.gun_nozzle.x += delta_x
         
 
     def draw(self):
-        draw_texture_ex(self.sprite,self.top,0,2,RED)
+        draw_texture_ex(self.sprite,self.top,0,2,WHITE)
         #draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
@@ -86,7 +88,8 @@ class Bullet():
 
 class Gun():
 
-    def __init__(self,position):
+    def __init__(self,position, spritepos):
+        self.spritepos = spritepos
         self.dt = get_frame_time()
         self.bullets = deque()
         self.position = position
@@ -107,11 +110,11 @@ class Gun():
     def draw(self):
         if is_key_down(KEY_TWO) and self.firing:
             if self.time_held % 30 < 10:
-                draw_texture_ex(self.flash1,self.position,0,.2,RED)
+                draw_texture_ex(self.flash1,self.spritepos,0,.2,RED)
             elif self.time_held % 30 < 20:
-                draw_texture_ex(self.flash2,self.position,0,.2,RED)
+                draw_texture_ex(self.flash2,self.spritepos,0,.2,RED)
             else:
-                draw_texture_ex(self.flash3,self.position,0,.2,RED)
+                draw_texture_ex(self.flash3,self.spritepos,0,.2,RED)
 
             #draw_circle(int(self.position.x), int(self.position.y), 20, BLACK)
 
