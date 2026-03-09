@@ -1,8 +1,10 @@
 from raylib import *
 from pyray import *
+from pathlib import Path
 
-
+THIS_DIR = Path(__file__).resolve().parent
 WINDOW_WIDTH, WINDOW_HEIGHT = 1000,800
+
 # WINDOW_WIDTH = get_monitor_width(0)
 # WINDOW_HEIGHT = get_monitor_height(0)
 #print("HERE",WINDOW_HEIGHT,WINDOW_WIDTH)

@@ -94,6 +94,7 @@ class Gun():
         self.bullets = deque()
         self.position = position
         self.time_held = 0
+        self.firing = False
         
         pass
     def update(self):
@@ -108,7 +109,7 @@ class Gun():
             self.firing = False
 
     def draw(self):
-        if is_key_down(KEY_TWO) and self.firing:
+        if self.firing:
             if self.time_held % 30 < 10:
                 draw_texture_ex(self.flash1,self.spritepos,0,.2,RED)
             elif self.time_held % 30 < 20:
@@ -129,7 +130,16 @@ class Gun():
         unload_texture(self.flash3)
         
         
+class Boss():
 
+    def __init__(self):
+        pass
+
+    def startup(self):
+        pass
+
+    def shutdown(self):
+        pass
 
 class Shoot():
 
@@ -195,7 +205,7 @@ class Ball():
 
                 self.add_points(self.radius)
 
-        top = self.parent.player.top
+        top = self.parent.player.gun_nozzle
         pos = self.parent.player.position
         right = self.parent.player.right
         
