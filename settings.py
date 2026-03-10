@@ -33,11 +33,16 @@ SHOOT_COLOR       =  DARKGRAY
 POINTS_FRAMES     =  100
 
 TRANSPARENT_GRAY  = Color(50,50,50,50)
+CLEAR             = Color(255,255,255,255)
+TRANSPARENT_GREEN = Color(0,255,0,100)
 
 BULLET_SPEED      =  1000
+BULLET_OFFSET     =  50
 
 BOSS_SPEED        =  1
 BOSS_HP           =  200
+AMP_X             =  300
+AMP_Y             =  100
 
 # class Settings():
 #     def __init__(self):

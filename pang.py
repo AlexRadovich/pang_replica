@@ -3,6 +3,7 @@ from settings import *
 from pyray import *
 from collections import deque
 from pathlib import Path
+import math
 import random
 
 class Player():
@@ -20,6 +21,7 @@ class Player():
         #self.active_shots = 0
 
         self.gun = Gun(self.gun_nozzle, self.right)
+        self.hitbox_center = Vector2(position.x, position.y-55)
 
     def startup(self):
         self.sprite = load_texture("assets/ship.png")
@@ -35,6 +37,8 @@ class Player():
             self.movement.x += .5
         elif is_key_down(KeyboardKey.KEY_LEFT) and move > -PLAYER_SPEED_MAX:
             self.movement.x -= .5
+        elif abs(move) <= 1:
+            self.movement.x = 0
         elif move != 0:
             self.movement.x -= (move / abs(move))/3
 
@@ -51,10 +55,13 @@ class Player():
         self.top.x += delta_x
         self.right.x += delta_x
         self.gun_nozzle.x += delta_x
+        self.hitbox_center.x += delta_x
         
 
     def draw(self):
         draw_texture_ex(self.sprite,self.top,0,1,WHITE)
+        draw_circle(int(self.position.x),int(self.position.y),5, RED)
+        draw_circle_v(self.hitbox_center, 9, GREEN)
         #draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
@@ -73,7 +80,7 @@ class Bullet():
 
     def __init__(self,position, horizontal_offset=0):
         self.position = position
-        self.hoff = horizontal_offset
+        self.hoff = random.randint(-BULLET_OFFSET,BULLET_OFFSET)
 
         #bullet_texture = load_texture()
         pass
@@ -104,7 +111,6 @@ class Gun():
             if self.time_held % 5 == 0:
                 self.bullets.append(Bullet(Vector2(self.position.x,self.position.y)))
             
-            #replace with muzzle flash sprite
         if not is_key_down(KEY_SPACE):
             self.firing = False
 
@@ -133,17 +139,49 @@ class Gun():
 class Boss():
 
     def __init__(self):
-        self.position = Vector2(WINDOW_WIDTH//2, 200)
+        self.position = Vector2(WINDOW_WIDTH//2+97, 300)
+        self.hitbox_center = Vector2(self.position.x-97,self.position.y-100)
+        self.cx = self.position.x-97
+        self.cy = self.position.y-100
         self.hp = BOSS_HP
         self.speed = BOSS_SPEED
+        self.ax = AMP_X
+        self.ay = AMP_Y
+        self.x = self.position.x-97
+        self.y = self.position.y-100
+        self.t = 0
+        self.base_speed = BOSS_SPEED
         pass
 
     def update(self):
-        pass
+        dt = get_frame_time()
+
+        curvature = abs(math.cos(self.t))
+
+        speed = self.base_speed * (0.5 + curvature)
+
+        self.t += speed * dt
+        tempx = self.x
+        tempy = self.y
+        self.x = self.cx + self.ax * math.sin(self.t)
+        self.y = self.cy + self.ay * math.sin(2 * self.t)
+        tempx = self.x -tempx
+        tempy = self.y -tempy
+        self.position.x += tempx
+        self.position.y += tempy
+        self.hitbox_center.x += tempx
+        self.hitbox_center.y += tempy
+
+        if abs(math.sin(self.t)) < 0.02:
+            #do attack
+            pass
+
 
     def draw(self):
-        draw_texture_ex(self.base,self.position,180,1,GREEN)
-        draw_circle(int(self.position.x),int(self.position.y),5,RED)
+        draw_texture_ex(self.base,self.position,180,1.5,CLEAR)
+        #draw_circle(int(self.position.x),int(self.position.y),5,RED)
+        draw_circle_v(self.hitbox_center, 70, TRANSPARENT_GREEN)
+        #draw_circle(int(self.x),int(self.y),30,PURPLE)
 
     def startup(self):
         self.base = load_texture("assets/boss.png")
@@ -154,6 +192,17 @@ class Boss():
         unload_texture(self.base)
         unload_texture(self.demo)
         unload_texture(self.flash)
+
+
+class Boss_attack1():
+
+    def __init__(self):
+        pass
+
+    pass
+
+class Boss_attack2():
+    pass
 
 class Shoot():
 
@@ -269,8 +318,8 @@ class Game():
         self.gameover = False
         self.victory = False
         self.player = Player(Vector2(WINDOW_WIDTH//2,WINDOW_HEIGHT))
-        self.balls = [Ball(self, Vector2(random.randint(0,WINDOW_WIDTH),random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(300,-100))  , 
-                      Ball(self, Vector2(random.randint(0,WINDOW_WIDTH) , random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(-300,-100)) ]
+        # self.balls = [Ball(self, Vector2(random.randint(0,WINDOW_WIDTH),random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(300,-100))  , 
+        #               Ball(self, Vector2(random.randint(0,WINDOW_WIDTH) , random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(-300,-100)) ]
         self.boss = Boss()
         
 
@@ -295,6 +344,7 @@ class Game():
 
                 self.player.update()
                 self.player.gun.update()
+                self.boss.update()
                 for bullet in self.player.gun.bullets:
                     bullet.update()
             
@@ -304,12 +354,15 @@ class Game():
 
 
                 actives = False
-                for ball in self.balls:
-                    if ball.active: 
-                        ball.update()
-                        actives = True
-                if not actives and not self.gameover:
-                    self.victory = True
+                # for ball in self.balls:
+                #     if ball.active: 
+                #         ball.update()
+                #         actives = True
+
+
+                #if not actives and not self.gameover:
+                # if not self.gameover:
+                #     self.victory = True
 
         if is_key_pressed(KEY_ENTER) and (self.gameover or self.victory):
             self.__init__()
@@ -322,8 +375,11 @@ class Game():
         
         
     def draw(self):
-        draw_texture(self.bg,0,0, PURPLE)
-        draw_text(f"{WINDOW_WIDTH}, {WINDOW_HEIGHT}" , 100, 200, 30, WHITE)
+        draw_texture(self.bg,0,0, PURPLE) #background
+
+        draw_text(f"FPS: {get_fps()}" , 20,100,20, WHITE) #fps
+        
+        draw_text(f"window is: {WINDOW_WIDTH} x {WINDOW_HEIGHT}" , 20, 130, 20, WHITE)
         self.player.draw()
         self.player.gun.draw()
         self.boss.draw()
@@ -331,8 +387,10 @@ class Game():
             bullet.draw()
         # for shot in self.player.shots: 
         #     if shot.active: shot.draw()
-        for ball in self.balls:
-            if ball.active: ball.draw()
+
+        # for ball in self.balls:
+        #     if ball.active: ball.draw()
+
         for ID in self.pointIDS:
             if ID[2] > 0:
                 draw_text(f"+{str(ID[3])}" , int(ID[0]) , int(ID[1]) , 20, Color(200, 122, 255, int(2.55 * ID[2])) )
