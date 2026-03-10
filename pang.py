@@ -12,12 +12,12 @@ class Player():
         self.position = position
         #self.top = Vector2(position.x + 25, position.y- 50)
         self.top = Vector2(position.x - 25, position.y - 80)
-        self.right = Vector2(position.x - 0, position.y - 95)
-        self.gun_nozzle = Vector2(position.x + 24, position.y - 65)
+        self.right = Vector2(position.x - 12, position.y - 85)
+        self.gun_nozzle = Vector2(position.x + 0, position.y - 75)
         self.speed = speed
-        self.shots = []
+        #self.shots = []
         self.movement = Vector2(0,0)
-        self.active_shots = 0
+        #self.active_shots = 0
 
         self.gun = Gun(self.gun_nozzle, self.right)
 
@@ -29,8 +29,8 @@ class Player():
     def update(self):
         move = self.movement.x
 
-        if is_key_pressed(KEY_SPACE):
-            self.shoot()
+        # if is_key_pressed(KEY_SPACE):
+        #     self.shoot()
         if is_key_down(KeyboardKey.KEY_RIGHT) and move < PLAYER_SPEED_MAX:
             self.movement.x += .5
         elif is_key_down(KeyboardKey.KEY_LEFT) and move > -PLAYER_SPEED_MAX:
@@ -54,7 +54,7 @@ class Player():
         
 
     def draw(self):
-        draw_texture_ex(self.sprite,self.top,0,2,WHITE)
+        draw_texture_ex(self.sprite,self.top,0,1,WHITE)
         #draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
@@ -84,7 +84,7 @@ class Bullet():
         self.position.x +=  self.hoff * dt
 
     def draw(self):
-        draw_circle(int(self.position.x), int(self.position.y), 10, RED)
+        draw_circle(int(self.position.x), int(self.position.y), 5, RED)
 
 class Gun():
 
@@ -98,24 +98,24 @@ class Gun():
         
         pass
     def update(self):
-        if is_key_down(KEY_TWO):
+        if is_key_down(KEY_SPACE):
             self.firing = True
             self.time_held += 1
             if self.time_held % 5 == 0:
                 self.bullets.append(Bullet(Vector2(self.position.x,self.position.y)))
             
             #replace with muzzle flash sprite
-        if not is_key_down(KEY_TWO):
+        if not is_key_down(KEY_SPACE):
             self.firing = False
 
     def draw(self):
         if self.firing:
             if self.time_held % 30 < 10:
-                draw_texture_ex(self.flash1,self.spritepos,0,.2,RED)
+                draw_texture_ex(self.flash1,self.spritepos,0,.1,RED)
             elif self.time_held % 30 < 20:
-                draw_texture_ex(self.flash2,self.spritepos,0,.2,RED)
+                draw_texture_ex(self.flash2,self.spritepos,0,.1,RED)
             else:
-                draw_texture_ex(self.flash3,self.spritepos,0,.2,RED)
+                draw_texture_ex(self.flash3,self.spritepos,0,.1,RED)
 
             #draw_circle(int(self.position.x), int(self.position.y), 20, BLACK)
 
@@ -133,13 +133,25 @@ class Gun():
 class Boss():
 
     def __init__(self):
+        self.position = Vector2(WINDOW_WIDTH//2, 200)
         pass
+
+    def update(self):
+        pass
+
+    def draw(self):
+        draw_texture_ex(self.base,self.position,180,1,GREEN)
+        draw_circle(int(self.position.x),int(self.position.y),5,RED)
 
     def startup(self):
-        pass
+        self.base = load_texture("assets/boss.png")
+        self.demo = load_texture("assets/boss_demolition.png")
+        self.flash = load_texture("assets/boss_flashing.png")
 
     def shutdown(self):
-        pass
+        unload_texture(self.base)
+        unload_texture(self.demo)
+        unload_texture(self.flash)
 
 class Shoot():
 
@@ -194,16 +206,16 @@ class Ball():
 
         
 
-        for line in self.parent.player.shots:
-            if line.active and check_collision_circle_line(self.position,self.radius,line.start,line.top):
-                line.active = False
-                self.parent.player.active_shots -= 1
+        # for line in self.parent.player.shots:
+        #     if line.active and check_collision_circle_line(self.position,self.radius,line.start,line.top):
+        #         line.active = False
+        #         self.parent.player.active_shots -= 1
 
-                if self.radius >= 19:
-                    self.split()
-                self.active = False
+        #         if self.radius >= 19:
+        #             self.split()
+        #         self.active = False
 
-                self.add_points(self.radius)
+        #         self.add_points(self.radius)
 
         top = self.parent.player.gun_nozzle
         pos = self.parent.player.position
@@ -257,6 +269,7 @@ class Game():
         self.player = Player(Vector2(WINDOW_WIDTH//2,WINDOW_HEIGHT))
         self.balls = [Ball(self, Vector2(random.randint(0,WINDOW_WIDTH),random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(300,-100))  , 
                       Ball(self, Vector2(random.randint(0,WINDOW_WIDTH) , random.randint(0,WINDOW_HEIGHT//4)) , True, BIG_BALL_SIZE , Vector2(-300,-100)) ]
+        self.boss = Boss()
         
 
     def get_screen_dimens(self):
@@ -267,6 +280,7 @@ class Game():
     def startup(self):
         self.bg = load_texture("assets/bg.png")
         self.player.startup()
+        self.boss.startup()
 
 
     def update(self):
@@ -283,8 +297,8 @@ class Game():
                     bullet.update()
             
 
-                for shot in self.player.shots: 
-                    if shot.active: shot.update()
+                # for shot in self.player.shots: 
+                #     if shot.active: shot.update()
 
 
                 actives = False
@@ -310,10 +324,11 @@ class Game():
         draw_text(f"{WINDOW_WIDTH}, {WINDOW_HEIGHT}" , 100, 200, 30, WHITE)
         self.player.draw()
         self.player.gun.draw()
+        self.boss.draw()
         for bullet in self.player.gun.bullets:
             bullet.draw()
-        for shot in self.player.shots: 
-            if shot.active: shot.draw()
+        # for shot in self.player.shots: 
+        #     if shot.active: shot.draw()
         for ball in self.balls:
             if ball.active: ball.draw()
         for ID in self.pointIDS:
@@ -338,3 +353,4 @@ class Game():
         unload_texture(self.bg)
         self.player.shutdown()
         self.player.gun.shutdown()
+        self.boss.shutdown()
