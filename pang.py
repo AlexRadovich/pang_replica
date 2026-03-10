@@ -134,6 +134,8 @@ class Boss():
 
     def __init__(self):
         self.position = Vector2(WINDOW_WIDTH//2, 200)
+        self.hp = BOSS_HP
+        self.speed = BOSS_SPEED
         pass
 
     def update(self):

@@ -36,6 +36,9 @@ TRANSPARENT_GRAY  = Color(50,50,50,50)
 
 BULLET_SPEED      =  1000
 
+BOSS_SPEED        =  1
+BOSS_HP           =  200
+
 # class Settings():
 #     def __init__(self):
 #         WINDOW_WIDTH = get_screen_width()
