@@ -32,15 +32,21 @@ SHOOT_COLOR       =  DARKGRAY
 
 POINTS_FRAMES     =  100
 
-TRANSPARENT_GRAY  = Color(50,50,50,50)
-CLEAR             = Color(255,255,255,255)
-TRANSPARENT_GREEN = Color(0,255,0,100)
+TRANSPARENT_GRAY  =  Color(50,50,50,50)
+CLEAR             =  Color(255,255,255,255)
+TRANSPARENT_GREEN =  Color(0,255,0,100)
+DARKRED           =  Color(139,0,0,255)
+TRANSPARENT_RED   =  Color(139,0,0,60)
 
 BULLET_SPEED      =  1000
 BULLET_OFFSET     =  50
+BULLET_SIZE       =  5
 
 BOSS_SPEED        =  1
 BOSS_HP           =  200
+BOSS_HITBOX_SIZE  =  70
+BOSS_ATTACK_SPEED =  -100
+MAX_BOSS_HOFF     =  300
 AMP_X             =  300
 AMP_Y             =  100
 
