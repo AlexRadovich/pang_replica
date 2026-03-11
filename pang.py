@@ -312,6 +312,8 @@ class Game():
 
     def __init__(self):
 
+        self.debug_mode_on = False
+
         self.get_screen_dimens()
         self.pointIDS = []
         self.paused = False
@@ -337,8 +339,9 @@ class Game():
     def update(self):
 
         if (not self.gameover and not self.victory):
-            if IsKeyPressed(KEY_P):
-                self.paused = not self.paused
+
+            if IsKeyPressed(KEY_P): self.paused = not self.paused
+            if is_key_pressed(KEY_T): self.debug_mode_on = not self.debug_mode_on
 
             if not self.paused:
 
@@ -377,9 +380,11 @@ class Game():
     def draw(self):
         draw_texture(self.bg,0,0, PURPLE) #background
 
-        draw_text(f"FPS: {get_fps()}" , 20,100,20, WHITE) #fps
-        
-        draw_text(f"window is: {WINDOW_WIDTH} x {WINDOW_HEIGHT}" , 20, 130, 20, WHITE)
+        if self.debug_mode_on:
+            draw_text(f"FPS: {get_fps()}" , 20,100,20, WHITE) #fps
+            
+            draw_text(f"window is: {WINDOW_WIDTH} x {WINDOW_HEIGHT}" , 20, 130, 20, WHITE)
+
         self.player.draw()
         self.player.gun.draw()
         self.boss.draw()
