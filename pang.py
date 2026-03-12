@@ -22,7 +22,7 @@ class Player():
         #self.active_shots = 0
 
         self.gun = Gun(self, self.gun_nozzle, self.right)
-        self.hitbox_center = Vector2(position.x, position.y-55)
+        self.hitbox_center = Vector2(position.x-1, position.y-55)
 
     def startup(self):
         self.sprite = load_texture("assets/ship.png")
@@ -62,7 +62,8 @@ class Player():
     def draw(self):
         draw_texture_ex(self.sprite,self.top,0,1,WHITE)
         draw_circle(int(self.position.x),int(self.position.y),5, RED)
-        draw_circle_v(self.hitbox_center, 9, GREEN)
+        if self.parent.debug_mode_on:
+            draw_circle_v(self.hitbox_center, 9, TRANSPARENT_GREEN)
         #draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
@@ -227,7 +228,8 @@ class Boss():
 
         draw_text(str(self.hp) , WINDOW_WIDTH//2, 50 ,20, GREEN)
         #draw_circle(int(self.position.x),int(self.position.y),5,RED)
-        draw_circle_v(self.hitbox_center, BOSS_HITBOX_SIZE, TRANSPARENT_GREEN)
+        if self.parent.debug_mode_on:
+            draw_circle_v(self.hitbox_center, BOSS_HITBOX_SIZE, TRANSPARENT_GREEN)
         #draw_circle(int(self.x),int(self.y),30,PURPLE)
         draw_rectangle(int(WINDOW_WIDTH//4) , 10 , int((WINDOW_WIDTH//2) * (self.hp / BOSS_HP)) , 10 , RED)
         draw_rectangle(int(WINDOW_WIDTH//4) , 17 , int((WINDOW_WIDTH//2) * (self.hp / BOSS_HP)) , 3 , DARKRED)
