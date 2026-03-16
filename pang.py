@@ -64,7 +64,6 @@ class Player():
         draw_circle(int(self.position.x),int(self.position.y),5, RED)
         if self.parent.debug_mode_on:
             draw_circle_v(self.hitbox_center, 9, TRANSPARENT_GREEN)
-        #draw_triangle(self.top,self.position,self.right,PLAYER_COLOR)
 
     def shoot(self):
         if self.active_shots < PLAYER_MAX_SHOOTS:
