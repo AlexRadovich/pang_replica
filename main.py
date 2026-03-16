@@ -16,7 +16,7 @@ if __name__ == '__main__':
   # close_window()
   # init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Pang")
 
-  set_target_fps(40)
+  set_target_fps(120)
 
   current_game.startup()
 
