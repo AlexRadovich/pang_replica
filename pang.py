@@ -47,8 +47,8 @@ class Player():
 
         delta_x = self.position.x
 
-        motion_this_frame = vector2_scale(self.movement, get_frame_time() * self.speed)
-        self.position = vector2_add(self.position, motion_this_frame)
+        motion_this_frame = self.movement.x * get_frame_time() * self.speed
+        self.position.x += int(motion_this_frame)
         self.position.x = max(0, self.position.x)
         self.position.x = min(self.position.x, WINDOW_WIDTH - 50)
 
