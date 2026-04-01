@@ -30,6 +30,7 @@ class Player():
         self.gun.startup()
 
 
+
     def update(self):
         move = self.movement.x
 
@@ -203,9 +204,9 @@ class Boss():
             i.update()
 
         if self.fired_this_cycle == False and abs(math.sin(self.t)) < 0.02:
-            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF,-MAX_BOSS_HOFF // 3) , BOSS_ATTACK_SPEED))
-            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF //3 ,MAX_BOSS_HOFF //3 ) , BOSS_ATTACK_SPEED))
-            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(MAX_BOSS_HOFF//3,MAX_BOSS_HOFF) , BOSS_ATTACK_SPEED))
+            self.attacks.append(Boss_attack1(self,Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF,-MAX_BOSS_HOFF // 3) , BOSS_ATTACK_SPEED))
+            self.attacks.append(Boss_attack1(self,Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF //3 ,MAX_BOSS_HOFF //3 ) , BOSS_ATTACK_SPEED))
+            self.attacks.append(Boss_attack1(self,Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(MAX_BOSS_HOFF//3,MAX_BOSS_HOFF) , BOSS_ATTACK_SPEED))
             self.fired_this_cycle = True
             
         elif abs(math.sin(self.t)) >= 0.02:
@@ -246,22 +247,38 @@ class Boss():
 
 class Boss_bullet():
 
-    def __init__(self, origin,  theta, radius):
-        self.position = origin
+    def __init__(self, parent, origin,  theta, radius, position):
+        self.parent = parent
+        self.origin = origin
         self.theta = theta
         self.radius = radius
+        self.position = position
 
     def update(self):
         self.theta += BOSS_ATTACK_ROTATION * get_frame_time()
+        self.position = Vector2(int(self.origin.x + math.cos(self.theta) * self.radius) , int(self.origin.y + math.sin(self.theta) * self.radius))
+        if check_collision_circles(self.position,BOSS_BULLET_SIZE, self.parent.parent.parent.player.hitbox_center , 9):
+            #DO HIT LOGIC
+            pass
+    def draw(self):
+
+        draw_circle_v(self.position, BOSS_BULLET_SIZE , YELLOW)
+
+class Boss_bullet_type2():
+
+    def __init__(self):
+        pass
+
+    def update(self):
+        pass
 
     def draw(self):
-        draw_circle(int(self.position.x + math.cos(self.theta) * self.radius) , int(self.position.y + math.sin(self.theta) * self.radius) , BOSS_BULLET_SIZE , RED)
-
-
+        pass
 
 class Boss_attack1():
 
-    def __init__(self, center, radius, hoff, speed):
+    def __init__(self, parent, center, radius, hoff, speed):
+        self.parent = parent
         self.position = center
         self.radius = radius
         self.hoff   = hoff
@@ -270,7 +287,7 @@ class Boss_attack1():
         self.theta = ((math.pi * 2) / BOSS_ATTACK1_BULLETS)
         self.attack_rotation = 0
         for i in range(BOSS_ATTACK1_BULLETS):
-            self.bullets.append(Boss_bullet(center , self.theta * i, self.radius))
+            self.bullets.append(Boss_bullet(self, center , self.theta * i, self.radius , Vector2(int(self.position.x + math.cos(self.theta * i) * self.radius) , int(self.position.y + math.sin(self.theta * i) * self.radius))))
 
     def update(self):
         dt = get_frame_time()
@@ -281,20 +298,16 @@ class Boss_attack1():
             bullet.update()
 
     def draw(self):
-        #draw_circle_v(self.position , self.radius , TRANSPARENT_RED)
         for bullet in self.bullets:
             bullet.draw()
-            #draw_text(f"{math.sin(self.theta) * i}" , 100 , 20 * i , 20 , WHITE)
-            #draw_text(f"{math.cos(self.theta) * i}" , 540 , 20 * i , 20 , WHITE)
-            #draw_circle_v(self.bullets[i].position , BOSS_BULLET_SIZE , RED)
-            #draw_circle(int(self.position.x + math.cos(self.theta * i + self.attack_rotation) * self.radius) , int(self.position.y + math.sin(self.theta * i + self.attack_rotation) * self.radius) , BOSS_BULLET_SIZE , RED)
             
-
-
     
 
 class Boss_attack2():
-    pass
+    
+    def __init__(self, parent):
+        self.parent = parent
+        self.
 
 class Shoot():
 
