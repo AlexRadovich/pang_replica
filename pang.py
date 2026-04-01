@@ -1,5 +1,6 @@
-from raylib import *
+#from raylib import *
 from settings import *
+from enums import * 
 from pyray import *
 from collections import deque
 from pathlib import Path
@@ -119,7 +120,6 @@ class Gun():
         self.time_held = 0
         self.firing = False
         
-        pass
     def update(self):
 
         for _ in range(self.deads):
@@ -203,12 +203,11 @@ class Boss():
             i.update()
 
         if self.fired_this_cycle == False and abs(math.sin(self.t)) < 0.02:
-            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF,MAX_BOSS_HOFF) , BOSS_ATTACK_SPEED))
-            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF,MAX_BOSS_HOFF) , BOSS_ATTACK_SPEED))
-            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF,MAX_BOSS_HOFF) , BOSS_ATTACK_SPEED))
+            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF,-MAX_BOSS_HOFF // 3) , BOSS_ATTACK_SPEED))
+            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(-MAX_BOSS_HOFF //3 ,MAX_BOSS_HOFF //3 ) , BOSS_ATTACK_SPEED))
+            self.attacks.append(Boss_attack1(Vector2(self.hitbox_center.x,self.hitbox_center.y+15), 150 , random.randint(MAX_BOSS_HOFF//3,MAX_BOSS_HOFF) , BOSS_ATTACK_SPEED))
             self.fired_this_cycle = True
-            #do attack
-            pass
+            
         elif abs(math.sin(self.t)) >= 0.02:
             self.fired_this_cycle = False
 
@@ -245,6 +244,20 @@ class Boss():
         unload_texture(self.demo)
         unload_texture(self.flash)
 
+class Boss_bullet():
+
+    def __init__(self, origin,  theta, radius):
+        self.position = origin
+        self.theta = theta
+        self.radius = radius
+
+    def update(self):
+        self.theta += BOSS_ATTACK_ROTATION * get_frame_time()
+
+    def draw(self):
+        draw_circle(int(self.position.x + math.cos(self.theta) * self.radius) , int(self.position.y + math.sin(self.theta) * self.radius) , BOSS_BULLET_SIZE , RED)
+
+
 
 class Boss_attack1():
 
@@ -253,15 +266,30 @@ class Boss_attack1():
         self.radius = radius
         self.hoff   = hoff
         self.speed  = speed
+        self.bullets = []
+        self.theta = ((math.pi * 2) / BOSS_ATTACK1_BULLETS)
+        self.attack_rotation = 0
+        for i in range(BOSS_ATTACK1_BULLETS):
+            self.bullets.append(Boss_bullet(center , self.theta * i, self.radius))
 
     def update(self):
         dt = get_frame_time()
         self.position.y -= self.speed * dt
         self.position.x +=  self.hoff * dt
 
+        for bullet in self.bullets:
+            bullet.update()
 
     def draw(self):
-        draw_circle_v(self.position , self.radius , TRANSPARENT_RED)
+        #draw_circle_v(self.position , self.radius , TRANSPARENT_RED)
+        for bullet in self.bullets:
+            bullet.draw()
+            #draw_text(f"{math.sin(self.theta) * i}" , 100 , 20 * i , 20 , WHITE)
+            #draw_text(f"{math.cos(self.theta) * i}" , 540 , 20 * i , 20 , WHITE)
+            #draw_circle_v(self.bullets[i].position , BOSS_BULLET_SIZE , RED)
+            #draw_circle(int(self.position.x + math.cos(self.theta * i + self.attack_rotation) * self.radius) , int(self.position.y + math.sin(self.theta * i + self.attack_rotation) * self.radius) , BOSS_BULLET_SIZE , RED)
+            
+
 
     
 
@@ -367,11 +395,6 @@ class Ball():
 
 
 
-
-
-    
-class Score():
-    pass
 class Game():
 
     def __init__(self):
@@ -404,7 +427,7 @@ class Game():
 
         if (not self.gameover and not self.victory):
 
-            if IsKeyPressed(KEY_P): self.paused = not self.paused
+            if is_key_pressed(KEY_P): self.paused = not self.paused
             if is_key_pressed(KEY_T): self.debug_mode_on = not self.debug_mode_on
 
             if not self.paused:

@@ -45,10 +45,13 @@ BULLET_SIZE       =  5
 BOSS_SPEED        =  1
 BOSS_HP           =  200
 BOSS_HITBOX_SIZE  =  70
-BOSS_ATTACK_SPEED =  -100
-MAX_BOSS_HOFF     =  300
+BOSS_ATTACK_SPEED =  -80
+MAX_BOSS_HOFF     =  250
 AMP_X             =  300
 AMP_Y             =  100
+BOSS_ATTACK1_BULLETS = 15
+BOSS_BULLET_SIZE  =  8
+BOSS_ATTACK_ROTATION = .5
 
 # class Settings():
 #     def __init__(self):

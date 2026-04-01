@@ -1,4 +1,4 @@
-from raylib import *
+#from raylib import *
 from settings import *
 from pyray import *
 from pang import *
@@ -16,7 +16,7 @@ if __name__ == '__main__':
   # close_window()
   # init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Pang")
 
-  set_target_fps(60)
+  set_target_fps(120)
 
   current_game.startup()
 
