@@ -264,6 +264,8 @@ class Boss_bullet():
 
         draw_circle_v(self.position, BOSS_BULLET_SIZE , YELLOW)
 
+
+
 class Boss_bullet_type2():
 
     def __init__(self):
@@ -274,6 +276,8 @@ class Boss_bullet_type2():
 
     def draw(self):
         pass
+
+
 
 class Boss_attack1():
 
@@ -286,6 +290,7 @@ class Boss_attack1():
         self.bullets = []
         self.theta = ((math.pi * 2) / BOSS_ATTACK1_BULLETS)
         self.attack_rotation = 0
+        self.tophalf = True
         for i in range(BOSS_ATTACK1_BULLETS):
             self.bullets.append(Boss_bullet(self, center , self.theta * i, self.radius , Vector2(int(self.position.x + math.cos(self.theta * i) * self.radius) , int(self.position.y + math.sin(self.theta * i) * self.radius))))
 
@@ -293,6 +298,11 @@ class Boss_attack1():
         dt = get_frame_time()
         self.position.y -= self.speed * dt
         self.position.x +=  self.hoff * dt
+
+        if self.tophalf and self.position.y >= WINDOW_HEIGHT //2:
+            self.speed /= 2
+            self.hoff /=3
+            self.tophalf = False
 
         for bullet in self.bullets:
             bullet.update()
@@ -307,7 +317,6 @@ class Boss_attack2():
     
     def __init__(self, parent):
         self.parent = parent
-        self.
 
 class Shoot():
 
