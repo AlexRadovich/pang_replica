@@ -15,6 +15,8 @@ PLAYER_SPEED      =  50
 PLAYER_MAX_SHOOTS =  1
 PLAYER_COLOR      =  RED
 PLAYER_SPEED_MAX  =  15
+PLAYER_HBOX_RADIUS=  6
+PLAYER_FIRE_RATE  =  .03
 
 MAX_BIG_BALLS     =  2
 BALLS_SPEED       =  .80
@@ -37,6 +39,8 @@ CLEAR             =  Color(255,255,255,255)
 TRANSPARENT_GREEN =  Color(0,255,0,100)
 DARKRED           =  Color(139,0,0,255)
 TRANSPARENT_RED   =  Color(139,0,0,60)
+DEEP_PURPLE       =  Color(54,1,63,255)
+JUPITER_ORANGE    =  Color(241, 144, 57,255)
 
 BULLET_SPEED      =  1000
 BULLET_OFFSET     =  50
@@ -51,7 +55,8 @@ AMP_X             =  300
 AMP_Y             =  100
 BOSS_ATTACK1_BULLETS = 15
 BOSS_BULLET_SIZE  =  8
-BOSS_ATTACK_ROTATION = .5
+BOSS_ATTACK_ROTATION = .3
+BOSS_DEATH_FRAME  = .1
 
 # class Settings():
 #     def __init__(self):

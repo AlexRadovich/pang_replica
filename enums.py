@@ -2,4 +2,9 @@ from enum import IntEnum
 
 class Screens(IntEnum):
     MENU = 1
-    GAME = 2
+    TUTORIAL = 2
+    GAME = 3
+
+class difficulty(IntEnum):
+    EASY = 1
+    HARD = 2
