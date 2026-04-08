@@ -7,14 +7,9 @@ current_game = Game()
 
 if __name__ == '__main__':  
 
-  #set_config_flags(FLAG_FULLSCREEN_MODE)
 
   init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Pang")
-  #toggle_fullscreen()
-  #sett = Settings()
-  
-  # close_window()
-  # init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Pang")
+
 
   set_target_fps(120)
 
