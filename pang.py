@@ -1,4 +1,3 @@
-#from raylib import *
 from settings import *
 from enums import * 
 from pyray import *
@@ -13,20 +12,17 @@ class Player():
         self.points = 0
         self.parent = parent
         self.position = position
-        #self.top = Vector2(position.x + 25, position.y- 50)
         self.top = Vector2(position.x - 25, position.y - 80)
         self.right = Vector2(position.x - 12, position.y - 85)
         self.gun_nozzle = Vector2(position.x + 0, position.y - 75)
         self.speed = speed
-        #self.shots = []
         self.movement = Vector2(0,0)
-        #self.active_shots = 0
 
         self.gun = Gun(self, self.gun_nozzle, self.right)
         self.hitbox_center = Vector2(position.x-1, position.y-55)
 
     def startup(self):
-        self.sprite = load_texture("assets/ship.png")
+        self.sprite = load_texture("assets/ship.png") #https://foozlecc.itch.io/void-fleet-pack-2?download
         self.gun.startup()
 
 
@@ -34,8 +30,6 @@ class Player():
     def update(self):
         move = self.movement.x
 
-        # if is_key_pressed(KEY_SPACE):
-        #     self.shoot()
         if is_key_down(KeyboardKey.KEY_RIGHT) and move < PLAYER_SPEED_MAX:
             self.movement.x += .5
         elif is_key_down(KeyboardKey.KEY_LEFT) and move > -PLAYER_SPEED_MAX:
@@ -85,15 +79,12 @@ class Player():
 
 class Bullet():
 
-    def __init__(self, parent, position, active = True , horizontal_offset=0):
+    def __init__(self, parent, position, active = True ):
 
         self.active = active
         self.parent = parent
         self.position = position
         self.hoff = random.randint(-BULLET_OFFSET, BULLET_OFFSET)
-
-        #bullet_texture = load_texture()
-        pass
 
     def update(self):
         self.deads = 0
@@ -156,10 +147,10 @@ class Gun():
 
 
     def startup(self):
-        self.flash1 = load_texture("assets/F1.png")
-        self.flash2 = load_texture("assets/F2.png")
-        self.flash3 = load_texture("assets/F3.png")
-        self.blast  = load_sound("assets/blaster.wav")
+        self.flash1 = load_texture("assets/F1.png") #https://destroyanad.itch.io/simple-muzzle-flashes
+        self.flash2 = load_texture("assets/F2.png") #https://destroyanad.itch.io/simple-muzzle-flashes
+        self.flash3 = load_texture("assets/F3.png") #https://destroyanad.itch.io/simple-muzzle-flashes
+        self.blast  = load_sound("assets/blaster.wav") #https://mixkit.co/free-sound-effects/space-shooter/
         set_sound_volume(self.blast,.4)
 
 
@@ -192,9 +183,6 @@ class Boss():
 
         self.frame = 0
         self.frames_passed = BOSS_DEATH_FRAME
-
-
-        pass
 
    
 
@@ -255,8 +243,6 @@ class Boss():
         else:
             draw_texture_ex(self.base,self.position,180,1.5,CLEAR)
 
-            #draw_texture_pro(self.demo , Rectangle(self.frame * 120 , 120), Rectangle(self.position.x,self.position.y, 120, 120) , self.position , 0 , WHITE)
-
 
         draw_text(str(self.hp) , WINDOW_WIDTH//2, 50 ,20, GREEN)
 
@@ -270,9 +256,9 @@ class Boss():
             i.draw()
 
     def startup(self):
-        self.base = load_texture("assets/boss.png")
-        self.demo = load_texture("assets/boss_demolition.png")
-        self.flash = load_texture("assets/boss_flashing.png")
+        self.base = load_texture("assets/boss.png") #https://foozlecc.itch.io/void-fleet-pack-2?download
+        self.demo = load_texture("assets/boss_demolition.png") #https://foozlecc.itch.io/void-fleet-pack-2?download
+        self.flash = load_texture("assets/boss_flashing.png") #https://foozlecc.itch.io/void-fleet-pack-2?download
 
     def shutdown(self):
         unload_texture(self.base)
@@ -299,18 +285,6 @@ class Boss_bullet():
 
         draw_circle_v(self.position, BOSS_BULLET_SIZE , YELLOW)
 
-
-
-class Boss_bullet_type2():
-
-    def __init__(self):
-        pass
-
-    def update(self):
-        pass
-
-    def draw(self):
-        pass
 
 
 
@@ -462,13 +436,13 @@ class Game():
     
     def startup(self):
         init_audio_device()
-        self.bg = load_texture("assets/bg.png")
+        self.bg = load_texture("assets/bg.png") #https://digitalmoons.itch.io/free-space-background
         self.player.startup()
         self.boss.startup()
-        self.menu_music = load_music_stream("assets/menu.wav")
-        self.fight_music = load_music_stream("assets/battle.wav")
-        self.titlefont = load_font_ex("assets/titlefont.ttf", 80, None, 95)
-        self.selectfont = load_font_ex("assets/selectfont.otf", 50, None, 95)
+        self.menu_music = load_music_stream("assets/menu.wav") #https://gooseninja.itch.io/space-music-pack?download
+        self.fight_music = load_music_stream("assets/battle.wav") #https://gooseninja.itch.io/space-music-pack?download
+        self.titlefont = load_font_ex("assets/titlefont.ttf", 80, None, 95) #https://www.fontspace.com/sterion-font-f113971
+        self.selectfont = load_font_ex("assets/selectfont.otf", 50, None, 95) #https://www.fontspace.com/supreme-spike-font-f120395 
         play_music_stream(self.fight_music)
         play_music_stream(self.menu_music)
 
